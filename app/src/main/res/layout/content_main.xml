@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    android:background="#c0c0c0"
+    tools:showIn="@layout/activity_main">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="305dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" />
+
+    <Button
+        android:id="@+id/take_photo_btn"
+        android:layout_width="236dp"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="210dp"
+        android:onClick="takePhoto"
+        android:text="Take photo" />
+    <Button
+        android:id="@+id/upload_btn"
+        android:layout_width="236dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/take_photo_btn"
+        android:layout_centerHorizontal="true"
+        android:text="Upload photo"
+        android:onClick="uploadPhoto"/>
+
+    <android.support.design.widget.FloatingActionButton
+         android:id="@+id/share_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:layout_marginBottom="25dp"
+         android:layout_marginLeft="20dp"
+         android:onClick="shareImage"
+         android:src="@drawable/ic_share"
+         android:visibility="visible"
+         app:backgroundTint="@android:color/white" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            android:layout_alignStart="@+id/clear_button"
+            android:onClick="saveImage"
+            android:src="@drawable/ic_save"
+            android:visibility="visible"
+            app:backgroundTint="@android:color/white" />
+
+
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="155dp"
+        android:text="Diagnose the Eye"
+        android:textSize="30sp"
+        android:textStyle="italic" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/clear_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="14dp"
+        android:onClick="clearImage"
+        android:src="@drawable/ic_clear"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="14dp" />
+
+    <TextView
+        android:id="@+id/info_about_disease"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:layout_below="@id/imageView"
+        android:text="The Disease"
+        android:textSize="20sp"
+        android:visibility="visible" />
+    </RelativeLayout>
+</ScrollView>
