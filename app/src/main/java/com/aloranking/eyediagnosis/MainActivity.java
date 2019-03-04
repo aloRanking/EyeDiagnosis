@@ -1,8 +1,10 @@
 package com.aloranking.eyediagnosis;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,12 +31,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_STORAGE_PERMISSION = 1;
     private static final int CAMERA_REQUEST = 18;
     private static final int PICK_IMAGE = 100;
+    private String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private Button takePhoto;
     private Button uploadPhoto;
@@ -66,9 +72,16 @@ public class MainActivity extends AppCompatActivity {
         mSaveFab = findViewById(R.id.save_button);
         mClearFab = findViewById(R.id.clear_button);
 
+        mSaveFab.setVisibility(View.GONE);
+        mShareFab.setVisibility(View.GONE);
+        mClearFab.setVisibility(View.GONE);
+
 
         mWelcomeText = findViewById(R.id.welcome_text);
         mInfoText = findViewById(R.id.info_about_disease);
+
+        mInfoText.setVisibility(View.GONE);
+
 
 
     }
@@ -112,10 +125,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void uploadPhoto(View view) {
-        Intent gallery =
-                new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery, PICK_IMAGE);
+
+        if (EasyPermissions.hasPermissions(this, galleryPermissions)) {
+            Intent gallery =
+                    new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            startActivityForResult(gallery, PICK_IMAGE);
+
+        } else {
+            EasyPermissions.requestPermissions(this, "Access for storage",
+                    101, galleryPermissions);
+        }
+
     }
 
     private void launchCamera() {
@@ -142,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Get the path of the temporary file
                 mTempPhotoPath = photoFile.getAbsolutePath();
+                Log.d("Picture Path", mTempPhotoPath);
 
                 // Get the content URI for the image file
                 Uri photoURI = FileProvider.getUriForFile(this,
@@ -185,6 +207,10 @@ public class MainActivity extends AppCompatActivity {
            processAndSetImage();
         } else if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             Uri imageUri = data.getData();
+             mTempPhotoPath = getPath( MainActivity.this, imageUri );
+            Log.d("Picture Path", mTempPhotoPath);
+
+
             takePhoto.setVisibility(View.GONE);
             uploadPhoto.setVisibility(View.GONE);
             mWelcomeText.setVisibility(View.GONE);
@@ -194,28 +220,31 @@ public class MainActivity extends AppCompatActivity {
             mShareFab.setVisibility(View.VISIBLE);
             mClearFab.setVisibility(View.VISIBLE);
 
-            imageView.setImageURI(imageUri);
+            mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
+            imageView.setImageBitmap(mResultsBitmap);
             imageView.setVisibility(View.VISIBLE);
         }
 
-            // Otherwise, delete the temporary image file_paths
-           // BitmapUtils.deleteImageFile(this, mTempPhotoPath);
+            //Otherwise, delete the temporary image file_paths
+            //BitmapUtils.deleteImageFile(this, mTempPhotoPath);
 
     }
 
-    private static File getOutputMediaFile(){
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "CameraDemo");
-
-        if (!mediaStorageDir.exists()){
-            if (!mediaStorageDir.mkdirs()){
-                return null;
+    public static String getPath(Context context, Uri uri ) {
+        String result = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver( ).query( uri, proj, null, null, null );
+        if(cursor != null){
+            if ( cursor.moveToFirst( ) ) {
+                int column_index = cursor.getColumnIndexOrThrow( proj[0] );
+                result = cursor.getString( column_index );
             }
+            cursor.close( );
         }
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_"+ timeStamp + ".jpg");
+        if(result == null) {
+            result = "Not found";
+        }
+        return result;
     }
 
     private void processAndSetImage() {
