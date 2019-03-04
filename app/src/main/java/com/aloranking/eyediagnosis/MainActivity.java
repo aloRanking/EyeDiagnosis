@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private Button takePhoto;
-    private Button uploadPhoto;
+    private Button uploadPhoto, analysePhoto;
 
     private ImageView imageView;
     private FloatingActionButton mShareFab;
@@ -66,22 +66,20 @@ public class MainActivity extends AppCompatActivity {
 
         takePhoto = findViewById(R.id.take_photo_btn);
         uploadPhoto = findViewById(R.id.upload_btn);
+        analysePhoto = findViewById(R.id.analyse_btn);
 
         imageView = findViewById(R.id.imageView);
         mShareFab = findViewById(R.id.share_button);
         mSaveFab = findViewById(R.id.save_button);
         mClearFab = findViewById(R.id.clear_button);
+        mWelcomeText = findViewById(R.id.welcome_text);
+
+
 
         mSaveFab.setVisibility(View.GONE);
         mShareFab.setVisibility(View.GONE);
         mClearFab.setVisibility(View.GONE);
-
-
-        mWelcomeText = findViewById(R.id.welcome_text);
-        mInfoText = findViewById(R.id.info_about_disease);
-
-        mInfoText.setVisibility(View.GONE);
-
+        analysePhoto.setVisibility(View.GONE);
 
 
     }
@@ -104,8 +102,44 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id==R.id.action_folder){
+
+            /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
+                    + "/Emojify/");
+            intent.setDataAndType(uri, "image");
+            startActivity(Intent.createChooser(intent, "Open folder"))*/;
+
+            getPhoto();
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getPhoto(){
+        String bucketId = "";
+
+        final String[] projection = new String[] {"DISTINCT " + MediaStore.Images.Media.BUCKET_DISPLAY_NAME + ", " + MediaStore.Images.Media.BUCKET_ID};
+        final Cursor cur = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
+
+        while (cur != null && cur.moveToNext()) {
+            final String bucketName = cur.getString((cur.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME)));
+            if (bucketName.equals("Emojify")) {
+                bucketId = cur.getString((cur.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_ID)));
+                break;
+            }
+        }
+        Uri mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+        if (bucketId.length() > 0) {
+            mediaUri = mediaUri.buildUpon()
+                    .authority("media")
+                    .appendQueryParameter("bucketId", bucketId)
+                    .build();
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, mediaUri);
+        startActivity(intent);
     }
 
     public void takePhoto(View view) {
@@ -219,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
             mSaveFab.setVisibility(View.VISIBLE);
             mShareFab.setVisibility(View.VISIBLE);
             mClearFab.setVisibility(View.VISIBLE);
+            analysePhoto.setVisibility(View.VISIBLE);
 
             mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
             imageView.setImageBitmap(mResultsBitmap);
@@ -256,7 +291,9 @@ public class MainActivity extends AppCompatActivity {
         mSaveFab.setVisibility(View.VISIBLE);
         mShareFab.setVisibility(View.VISIBLE);
         mClearFab.setVisibility(View.VISIBLE);
-        mInfoText.setVisibility(View.VISIBLE);
+
+
+        analysePhoto.setVisibility(View.VISIBLE);
 
 
         mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
@@ -270,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
         mSaveFab.setVisibility(View.GONE);
         mClearFab.setVisibility(View.GONE);
         imageView.setImageResource(0);
+        analysePhoto.setVisibility(View.GONE);
 
         takePhoto.setVisibility(View.VISIBLE);
         uploadPhoto.setVisibility(View.VISIBLE);
@@ -283,6 +321,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Save the image
         BitmapUtils.saveImage(this, mResultsBitmap);
+
+        mSaveFab.setEnabled(false);
     }
 
     public void shareImage(View view) {
@@ -294,5 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Share the image
         BitmapUtils.shareImage(this, mTempPhotoPath);
+
+        mShareFab.setEnabled(false);
     }
 }
