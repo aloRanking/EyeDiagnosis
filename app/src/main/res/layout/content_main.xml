@@ -120,6 +120,7 @@
             android:layout_below="@+id/imageView"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:text="Analyse" />
+            android:text="Analyse"
+            android:onClick="analyseImage"/>
     </RelativeLayout>
 </RelativeLayout>
