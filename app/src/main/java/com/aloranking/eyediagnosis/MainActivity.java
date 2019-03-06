@@ -533,14 +533,14 @@ public class MainActivity extends AppCompatActivity {
         hist2.convertTo(hist2, CvType.CV_32F);
 
         double compare = Imgproc.compareHist(hist1, hist2, Imgproc.CV_COMP_CHISQR);
-        Log.d("ImageComparator", "compare: " + compare);
+        Log.d("EyeDiagnosis", "compare: " + compare);
         if (compare > 0 && compare < 1500) {
-            Toast.makeText(MainActivity.this, "Images may be possible duplicates, verifying", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Image may be possible match, verifying", Toast.LENGTH_LONG).show();
             new asyncTask(MainActivity.this).execute();
         } else if (compare == 0) {
-            Toast.makeText(MainActivity.this, "Images are exact duplicates", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Dataset matched", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(MainActivity.this, "Images are not duplicates", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_LONG).show();
         }
 
         startTime = System.currentTimeMillis();
@@ -739,6 +739,12 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
                 alertDialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
