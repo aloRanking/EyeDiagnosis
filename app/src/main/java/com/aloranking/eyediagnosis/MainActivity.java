@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private static long startTime, endTime;
     private static String text;
     private static String path1;
+    private int imageSelectionType = 0;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -138,6 +139,34 @@ public class MainActivity extends AppCompatActivity {
         analysePhoto.setVisibility(View.GONE);
 
 
+        run();
+
+
+    }
+
+    public void run() {
+        if (descriptor == DescriptorExtractor.BRIEF)
+            descriptorType = "BRIEF";
+        else if (descriptor == DescriptorExtractor.BRISK)
+            descriptorType = "BRISK";
+        else if (descriptor == DescriptorExtractor.FREAK)
+            descriptorType = "FREAK";
+        else if (descriptor == DescriptorExtractor.ORB)
+            descriptorType = "ORB";
+        else if (descriptor == DescriptorExtractor.SIFT)
+            descriptorType = "SIFT";
+        else if (descriptor == DescriptorExtractor.SURF)
+            descriptorType = "SURF";
+        System.out.println(descriptorType);
+    }
+
+    @Override
+    protected void onNewIntent(Intent newIntent) {
+        super.onNewIntent(newIntent);
+        min_dist = newIntent.getExtras().getInt("min_dist");
+        descriptor = newIntent.getExtras().getInt("descriptor");
+        min_matches = newIntent.getExtras().getInt("min_matches");
+        run();
     }
 
     @Override
@@ -163,7 +192,13 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent call = new Intent(MainActivity.this, Settings.class);
+            call.putExtra("descriptor", descriptor);
+            call.putExtra("min_dist", min_dist);
+            call.putExtra("min_matches", min_matches);
+            call.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            call.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(call);
         }
         if (id == R.id.action_folder) {
 
@@ -326,12 +361,14 @@ public class MainActivity extends AppCompatActivity {
             mShareFab.setVisibility(View.VISIBLE);
             mClearFab.setVisibility(View.VISIBLE);
             analysePhoto.setVisibility(View.VISIBLE);
+            mShareFab.setEnabled(false);
 
             mUploadBitmap = BitmapUtils.resamplePic(this, path2);
             // mUploadBitmap = BitmapFactory.de
 
             imageView.setImageBitmap(mUploadBitmap);
             imageView.setVisibility(View.VISIBLE);
+            imageSelectionType = 2;
 
         }
 
@@ -366,13 +403,13 @@ public class MainActivity extends AppCompatActivity {
         mSaveFab.setVisibility(View.VISIBLE);
         mShareFab.setVisibility(View.VISIBLE);
         mClearFab.setVisibility(View.VISIBLE);
-
-
         analysePhoto.setVisibility(View.VISIBLE);
+        mShareFab.setEnabled(false);
 
 
         mUploadBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
         imageView.setImageBitmap(mUploadBitmap);
+        imageSelectionType = 1;
 
 
 
@@ -484,8 +521,12 @@ public class MainActivity extends AppCompatActivity {
         //BitmapUtils.saveImage(this, mResultsBitmap);
 
 
-        // Share the image
-        BitmapUtils.shareImage(this, mTempPhotoPath);
+        if (imageSelectionType == 1) {
+            // Share the image
+            BitmapUtils.shareImage(this, mTempPhotoPath);
+        }else if (imageSelectionType == 2){
+            BitmapUtils.shareImage(this, path2);
+        }
 
         mShareFab.setEnabled(false);
 
@@ -499,9 +540,11 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Bitmap> bitmapArray = new ArrayList<>();
 
         ArrayList<Bitmap> scaleBitmapArray = new ArrayList<Bitmap>();
+        ArrayList<Mat> datasetImages= new ArrayList<>();
 
         Bitmap dataset = BitmapFactory.decodeResource(getResources(), R.drawable.diabetis_1);
          bmpimg1= Bitmap.createScaledBitmap(dataset, 100, 150, true);
+
 
         Mat img1 = new Mat();
         Utils.bitmapToMat(bmpimg1, img1);
@@ -559,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
             Utils.bitmapToMat(bitPics, img1);
             Imgproc.cvtColor(img1, img1, Imgproc.COLOR_RGBA2GRAY);
             img1.convertTo(img1, CvType.CV_32F);
-            hist1 = new Mat();
+            Mat hist1 = new Mat();
             MatOfInt histSize = new MatOfInt(180);
             MatOfInt channels = new MatOfInt(0);
             ArrayList<Mat> bgr_planes1= new ArrayList<Mat>();
@@ -574,6 +617,23 @@ public class MainActivity extends AppCompatActivity {
 
 
             bitmapArray.add(bitPics);
+        }
+
+        for (int i =0; i<datasetImages.size(); i++){
+
+            double compares = Imgproc.compareHist(datasetImages.get(i), hist2, Imgproc.CV_COMP_CHISQR);
+            Log.d("EyeDiagnosis", "compare: " + compares);
+            if (compares > 0 && compares < 1500) {
+                Toast.makeText(MainActivity.this, "Image may be possible match, verifying", Toast.LENGTH_LONG).show();
+                new asyncTask(MainActivity.this).execute();
+            } else if (compares == 0) {
+                Toast.makeText(MainActivity.this, "Dataset matched", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_LONG).show();
+            }
+
+            startTime = System.currentTimeMillis();
+
         }*/
 
 
@@ -670,7 +730,7 @@ public class MainActivity extends AppCompatActivity {
                                 File logs = new File(Environment
                                         .getExternalStorageDirectory()
                                         .getAbsolutePath()
-                                        + "/imageComparator/Data Logs.txt");
+                                        + "/EyeDiagnosis/Data Logs.txt");
                                 FileWriter fw;
                                 BufferedWriter bw;
                                 try {
@@ -693,7 +753,7 @@ public class MainActivity extends AppCompatActivity {
                                                     + Environment
                                                     .getExternalStorageDirectory()
                                                     .getAbsolutePath()
-                                                    + "/imageComparator/Data Logs.txt",
+                                                    + "/EyeDiagnosis/Data Logs.txt",
                                             Toast.LENGTH_LONG).show();
                                 } catch (IOException e) {
                                     // TODO Auto-generated catch block
@@ -702,14 +762,14 @@ public class MainActivity extends AppCompatActivity {
                                         File dir = new File(Environment
                                                 .getExternalStorageDirectory()
                                                 .getAbsolutePath()
-                                                + "/imageComparator/");
+                                                + "/EyeDiagnosis/");
                                         dir.mkdirs();
                                         logs.createNewFile();
                                         logs = new File(
                                                 Environment
                                                         .getExternalStorageDirectory()
                                                         .getAbsolutePath()
-                                                        + "/imageComparator/Data Logs.txt");
+                                                        + "/EyeDiagnosis/Data Logs.txt");
                                         fw = new FileWriter(logs, true);
                                         bw = new BufferedWriter(fw);
                                         bw.write("Algorithm used: "
@@ -729,7 +789,7 @@ public class MainActivity extends AppCompatActivity {
                                                         + Environment
                                                         .getExternalStorageDirectory()
                                                         .getAbsolutePath()
-                                                        + "/imageComparator/Data Logs.txt",
+                                                        + "/EyeDiagnosis/Data Logs.txt",
                                                 Toast.LENGTH_LONG).show();
                                     } catch (IOException e1) {
                                         // TODO Auto-generated catch block
@@ -739,7 +799,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();

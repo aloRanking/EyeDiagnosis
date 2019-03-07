@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -66,6 +67,7 @@ class BitmapUtils {
 
         // Determine how much to scale down the image
         int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+        Log.i("Scale", "scalefactor is "+ scaleFactor);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
