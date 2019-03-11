@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -57,6 +58,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,15 +91,22 @@ public class MainActivity extends AppCompatActivity {
 
     private Bitmap mResultsBitmap, mUploadBitmap;
 
-    private static Bitmap bmp, bmpimg1, bmpimg2;
+    private  Bitmap bmp, bmpimg1, bmpimg2;
     private static String descriptorType;
     private static int min_dist = 10;
     private static int min_matches = 750;
     private static int descriptor = DescriptorExtractor.BRISK;
     private static long startTime, endTime;
-    private static String text;
+    private static String matchText,typeOfDisease;
     private static String path1;
     private int imageSelectionType = 0;
+
+    ArrayList<Mat> histImages= new ArrayList<>();
+    ArrayList<Bitmap> bmpImages= new ArrayList<>();
+    List<Integer> list = new ArrayList<>();
+    ArrayList<Bitmap> bitmapImages = new ArrayList<>();
+    ArrayList<String> assestString = new ArrayList<>();
+    private Context context;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        context = MainActivity.this;
 
         takePhoto = findViewById(R.id.take_photo_btn);
         uploadPhoto = findViewById(R.id.upload_btn);
@@ -140,7 +150,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         run();
+        if (list.size()==0){
+        addImagesToList();
+        }
 
+        Log.i("TAGA", "the value of list size is "+ list.size());
+        /*final AssetManager mgr = getAssets();
+        displayFiles(mgr, "imgs", context);
+*/
 
     }
 
@@ -532,17 +549,101 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    void displayFiles (AssetManager mgr, String path, Context context) {
+        try {
+            String list[] = mgr.list(path);
+            if (list != null)
+                for (int i=0; i<list.length; ++i){
+
+
+                    InputStream ims = context.getAssets().open("imgs/" + list[i]);
+                    Bitmap bitmap = BitmapFactory.decodeStream(ims);
+                    bitmapImages.add(bitmap);
+
+                 /*bitmapImages = BitmapFactory.decodeFile(list[i])*/
+                  //  assestString = BitmapFactory.decodeFile(list[i]);
+
+
+                    Log.v("Assets:", path +"/"+ list[i]);
+
+                }
+        } catch (IOException e) {
+            Log.v("List error:", "can't list" + path);
+        }
+
+    }
+
+    public void loadDataFromAssset(){
+        /*try {
+            // get input stream
+            InputStream ims = getAssets().open("avatar.jpg");
+            // load image as Drawable
+            Drawable d = Drawable.createFromStream(ims, null);
+            // set image to ImageView
+            mImage.setImageDrawable(d);
+        }
+        catch(IOException ex) {
+            return;
+        }
+
+        try {
+            Class res = R.drawable.class;
+            Field field = res.getField("drawableName");
+            int drawableId = field.getInt(null);
+        }
+        catch (Exception e) {
+            Log.e("MyTag", "Failure to get drawable id.", e);
+        }*/
+    }
+
+    public void addImagesToList(){
+        list.add(R.drawable.healthy1);
+        list.add(R.drawable.healthy2);
+        /*list.add(R.drawable.healthy3);
+        list.add(R.drawable.healthy4);
+        list.add(R.drawable.healthy4);
+        list.add(R.drawable.healthy5);
+        list.add(R.drawable.healthy7);
+        list.add(R.drawable.healthy9);
+        list.add(R.drawable.healthy10);
+        list.add(R.drawable.healthy2);*/
+
+
+
+        list.add(R.drawable.diabetic1);
+        list.add(R.drawable.diabetic2);
+        /*list.add(R.drawable.diabetic3);
+        list.add(R.drawable.diabetic4);
+        list.add(R.drawable.diabetic5);
+        list.add(R.drawable.diabetic6);
+        list.add(R.drawable.diabetic7);
+        list.add(R.drawable.diabetic8);
+        list.add(R.drawable.diabetic9);
+        list.add(R.drawable.diabetic10);
+*/
+
+        /*list.add(R.drawable.glaucoma1);
+        list.add(R.drawable.glaucoma2);
+        list.add(R.drawable.glaucoma3);
+        list.add(R.drawable.glaucoma4);
+        list.add(R.drawable.glaucoma5);
+        list.add(R.drawable.glaucoma6);
+        list.add(R.drawable.glaucoma7);
+        list.add(R.drawable.glaucoma8);
+        list.add(R.drawable.glaucoma9);
+        list.add(R.drawable.glaucoma10);
+*/
+    }
+
 
     public void analyseImage(View view) {
 
-        Bitmap upPhoto;
-        Bitmap imgDrawable, bmpImg1, bmpImg2;
-        ArrayList<Bitmap> bitmapArray = new ArrayList<>();
 
-        ArrayList<Bitmap> scaleBitmapArray = new ArrayList<Bitmap>();
-        ArrayList<Mat> datasetImages= new ArrayList<>();
+        Bitmap imgDrawable;
 
-        Bitmap dataset = BitmapFactory.decodeResource(getResources(), R.drawable.diabetis_1);
+
+
+      /*  Bitmap dataset = BitmapFactory.decodeResource(getResources(), R.drawable.diabetis_1);
          bmpimg1= Bitmap.createScaledBitmap(dataset, 100, 150, true);
 
 
@@ -586,71 +687,121 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_LONG).show();
         }
 
-        startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();*/
 
-        /*List<Integer> list = new ArrayList<>();
-        list.add(R.drawable.healthy_1);
-        list.add(R.drawable.healthy_2);
-        list.add(R.drawable.diabetis_1);
-        list.add(R.drawable.diabetis_2);
+       /* if (list.size() == 0) {
+            list.add(R.drawable.healthy1);
+            list.add(R.drawable.healthy2);
+            list.add(R.drawable.diabetic1);
+            list.add(R.drawable.diabetic2);
+            list.add(R.drawable.glaucoma1);
+            list.add(R.drawable.glaucoma2);
 
-        for(int i =1; i<list.size(); i++) {
-
-            imgDrawable = BitmapFactory.decodeResource(getResources(),list.get(i));
-            Bitmap bitPics = Bitmap.createScaledBitmap(imgDrawable,100,100,true);
-            Mat img1 = new Mat();
-            Utils.bitmapToMat(bitPics, img1);
-            Imgproc.cvtColor(img1, img1, Imgproc.COLOR_RGBA2GRAY);
-            img1.convertTo(img1, CvType.CV_32F);
-            Mat hist1 = new Mat();
-            MatOfInt histSize = new MatOfInt(180);
-            MatOfInt channels = new MatOfInt(0);
-            ArrayList<Mat> bgr_planes1= new ArrayList<Mat>();
-            Core.split(img1, bgr_planes1);
-            MatOfFloat histRanges = new MatOfFloat(0f, 180f);
-            boolean accumulate = false;
-            Imgproc.calcHist(bgr_planes1, channels, new Mat(), hist1, histSize, histRanges, accumulate);
-            Core.normalize(hist1, hist1, 0, hist1.rows(), Core.NORM_MINMAX, -1, new Mat());
-            img1.convertTo(img1, CvType.CV_32F);
-            hist1.convertTo(hist1, CvType.CV_32F);
-
-
-
-            bitmapArray.add(bitPics);
-        }
-
-        for (int i =0; i<datasetImages.size(); i++){
-
-            double compares = Imgproc.compareHist(datasetImages.get(i), hist2, Imgproc.CV_COMP_CHISQR);
-            Log.d("EyeDiagnosis", "compare: " + compares);
-            if (compares > 0 && compares < 1500) {
-                Toast.makeText(MainActivity.this, "Image may be possible match, verifying", Toast.LENGTH_LONG).show();
-                new asyncTask(MainActivity.this).execute();
-            } else if (compares == 0) {
-                Toast.makeText(MainActivity.this, "Dataset matched", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_LONG).show();
-            }
-
-            startTime = System.currentTimeMillis();
 
         }*/
 
 
+        if (histImages.size()==0) {
+
+
+                for (int i = 0; i < list.size(); i++) {
+
+                    imgDrawable = BitmapFactory.decodeResource(getResources(), list.get(i));
+                    //imgDrawable = bitmapImages.get(i);
+                    Bitmap bitmap = Bitmap.createScaledBitmap(imgDrawable, 150, 150, true);
+                    Mat img1 = new Mat();
+                    Utils.bitmapToMat(bitmap, img1);
+                    Imgproc.cvtColor(img1, img1, Imgproc.COLOR_RGBA2GRAY);
+                    img1.convertTo(img1, CvType.CV_32F);
+                    Mat hist1 = new Mat();
+                    MatOfInt histSize = new MatOfInt(180);
+                    MatOfInt channels = new MatOfInt(0);
+                    ArrayList<Mat> bgr_planes1 = new ArrayList<Mat>();
+                    Core.split(img1, bgr_planes1);
+                    MatOfFloat histRanges = new MatOfFloat(0f, 180f);
+                    boolean accumulate = false;
+                    Imgproc.calcHist(bgr_planes1, channels, new Mat(), hist1, histSize, histRanges, accumulate);
+                    Core.normalize(hist1, hist1, 0, hist1.rows(), Core.NORM_MINMAX, -1, new Mat());
+                    img1.convertTo(img1, CvType.CV_32F);
+                    hist1.convertTo(hist1, CvType.CV_32F);
+
+
+                    bmpImages.add(bitmap);
+                    Log.i("Bitmapimage", "bitmap images size is" + bmpImages.size());
+
+                    histImages.add(hist1);
+                    Log.i("DataImage", "data images size is" + histImages.size());
+                }
+            }
+
+
+
+        bmpimg2 = Bitmap.createScaledBitmap(mUploadBitmap, 150, 150, true);
+        Mat img2 = new Mat();
+        Utils.bitmapToMat(bmpimg2, img2);
+        Imgproc.cvtColor(img2, img2, Imgproc.COLOR_RGBA2GRAY);
+        Mat hist2 = new Mat(); MatOfInt histSize = new MatOfInt(180);
+        MatOfInt channels = new MatOfInt(0);
+        ArrayList<Mat> bgr_planes2 = new ArrayList<Mat>();
+        Core.split(img2, bgr_planes2);
+        MatOfFloat histRanges = new MatOfFloat(0f, 180f);
+        boolean accumulate = false;
+        Imgproc.calcHist(bgr_planes2, channels, new Mat(), hist2, histSize, histRanges, accumulate);
+        Core.normalize(hist2, hist2, 0, hist2.rows(), Core.NORM_MINMAX, -1, new Mat());
+        img2.convertTo(img2, CvType.CV_32F);
+        hist2.convertTo(hist2, CvType.CV_32F);
+
+
+        for (int i =0; i<histImages.size(); i++){
+
+            double compares = Imgproc.compareHist(histImages.get(i), hist2, Imgproc.CV_COMP_CHISQR);
+            Log.d("EyeDiagnosis", "compare: " + compares);
+            if (compares > 0 && compares < 50) {
+                bmpimg1 = bmpImages.get(i);
+                Log.i("TAGS", "the value of i is "+ i);
+                if (i<=1){
+                    typeOfDisease = "Healthy eye";
+                }else if (i>=1 && i<=2){
+                    typeOfDisease = "Diabetis Retinopathy";
+                }else {
+                    typeOfDisease = " Glaucoma";
+                }
+                Toast.makeText(MainActivity.this, "Image may be possible match, verifying", Toast.LENGTH_SHORT).show();
+                new asyncTask(MainActivity.this).execute();
+                Log.i("TAGA", "the value of i is "+ i);
+                break;
+            } else if (compares == 0) {
+                Toast.makeText(MainActivity.this, "Dataset matched", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_SHORT).show();
+            }
+
+            startTime = System.currentTimeMillis();
+
+
+
+
+        }
+
+
     }
 
-    public static class asyncTask extends AsyncTask<Void, Void, Void> {
-        private static Mat img1, img2, descriptors, dupDescriptors;
-        private static FeatureDetector detector;
-        private static DescriptorExtractor DescExtractor;
-        private static DescriptorMatcher matcher;
-        private static MatOfKeyPoint keypoints, dupKeypoints;
-        private static MatOfDMatch matches, matches_final_mat;
-        private static ProgressDialog pd;
-        private static boolean isDuplicate = false;
+
+
+    public class asyncTask extends AsyncTask<Void, Void, Void> {
+        private  Mat img1, img2, descriptors, dupDescriptors;
+        private  FeatureDetector detector;
+        private  DescriptorExtractor DescExtractor;
+        private  DescriptorMatcher matcher;
+        private  MatOfKeyPoint keypoints, dupKeypoints;
+        private  MatOfDMatch matches, matches_final_mat;
+        private  ProgressDialog pd;
+        private  boolean isDuplicate = false;
         private MainActivity asyncTaskContext = null;
-        private static Scalar RED = new Scalar(255, 0, 0);
-        private static Scalar GREEN = new Scalar(0, 255, 0);
+        private  Scalar RED = new Scalar(255, 0, 0);
+        private  Scalar GREEN = new Scalar(0, 255, 0);
+
+        private  Features2d features2d = null;
 
         public asyncTask(MainActivity context) {
             asyncTaskContext = context;
@@ -680,7 +831,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Mat img3 = new Mat();
                 MatOfByte drawnMatches = new MatOfByte();
-                Features2d.drawMatches(img1, keypoints, img2, dupKeypoints,
+                features2d.drawMatches(img1, keypoints, img2, dupKeypoints,
                         matches_final_mat, img3, GREEN, RED, drawnMatches, Features2d.NOT_DRAW_SINGLE_POINTS);
                 bmp = Bitmap.createBitmap(img3.cols(), img3.rows(),
                         Bitmap.Config.ARGB_8888);
@@ -695,14 +846,14 @@ public class MainActivity extends AppCompatActivity {
                 // to be judged as
                 // duplicate
                 {
-                    text = finalMatchesList.size()
-                            + " matches were found. Possible duplicate image.\nTime taken="
-                            + (endTime - startTime) + "ms";
+                    matchText = "Eye disease diagonized ";
+                           // + (endTime - startTime) + "ms";
+
+
                     isDuplicate = true;
                 } else {
-                    text = finalMatchesList.size()
-                            + " matches were found. Images aren't similar.\nTime taken="
-                            + (endTime - startTime) + "ms";
+                    matchText = "Eye disease diagonized ";
+                            //+ (endTime - startTime) + "ms";
                     isDuplicate = false;
                 }
                 pd.dismiss();
@@ -716,13 +867,15 @@ public class MainActivity extends AppCompatActivity {
                         .findViewById(R.id.finalImage);
                 matchedImages.setImageBitmap(bmp);
                 matchedImages.invalidate();
-                final CheckBox shouldBeDuplicate = (CheckBox) view
-                        .findViewById(R.id.checkBox);
+                /*final CheckBox shouldBeDuplicate = (CheckBox) view
+                        .findViewById(R.id.checkBox);*/
                 TextView message = (TextView) view.findViewById(R.id.message);
-                message.setText(text);
+                TextView diseaseMssg = view.findViewById(R.id.disease_mssg);
+                message.setText(matchText);
+                diseaseMssg.setText(typeOfDisease);
                 alertDialog.setView(view);
-                shouldBeDuplicate
-                        .setText("These images are actually duplicates.");
+                /*shouldBeDuplicate
+                        .setText("These images are actually duplicates.");*/
                 alertDialog.setPositiveButton("Add to logs",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
@@ -742,8 +895,10 @@ public class MainActivity extends AppCompatActivity {
                                             + min_dist + "\nMinimum good matches: " + min_matches
                                             + "\nMatches found: " + matchesFound + "\nTime elapsed: " + (endTime - startTime) + "seconds\n" + path1
                                             + " was compared to " + path2
+                                            + "\n"
+                                            + "type of disease " + typeOfDisease
                                             + "\n" + "Is actual duplicate: "
-                                            + shouldBeDuplicate.isChecked()
+                                            //+ shouldBeDuplicate.isChecked()
                                             + "\nRecognized as duplicate: "
                                             + isDuplicate + "\n");
                                     bw.close();
@@ -778,8 +933,10 @@ public class MainActivity extends AppCompatActivity {
                                                 + min_dist + "\n" + path1
                                                 + " was compared to " + path2
                                                 + "\n"
+                                                + "type of disease " + typeOfDisease
+                                                + "\n"
                                                 + "Is actual duplicate: "
-                                                + shouldBeDuplicate.isChecked()
+                                               // + shouldBeDuplicate.isChecked()
                                                 + "\nRecognized as duplicate: "
                                                 + isDuplicate + "\n");
                                         bw.close();
@@ -809,9 +966,11 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(asyncTaskContext, e.toString(),
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
+
             }
         }
+
 
 
 
@@ -828,7 +987,7 @@ public class MainActivity extends AppCompatActivity {
             detector = FeatureDetector.create(FeatureDetector.PYRAMID_FAST);
             DescExtractor = DescriptorExtractor.create(descriptor);
             matcher = DescriptorMatcher
-                    .create(4);
+                    .create(DescriptorMatcher.BRUTEFORCE_HAMMING);
 
             keypoints = new MatOfKeyPoint();
             dupKeypoints = new MatOfKeyPoint();
