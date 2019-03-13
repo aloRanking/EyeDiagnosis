@@ -150,14 +150,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         run();
-        if (list.size()==0){
-        addImagesToList();
-        }
 
-        Log.i("TAGA", "the value of list size is "+ list.size());
-        /*final AssetManager mgr = getAssets();
+       /* if (list.size()==0){
+        addImagesToList();
+        }*/
+
+
+        final AssetManager mgr = getAssets();
         displayFiles(mgr, "imgs", context);
-*/
 
     }
 
@@ -558,7 +558,8 @@ public class MainActivity extends AppCompatActivity {
 
                     InputStream ims = context.getAssets().open("imgs/" + list[i]);
                     Bitmap bitmap = BitmapFactory.decodeStream(ims);
-                    bitmapImages.add(bitmap);
+                    Bitmap bitResize = Bitmap.createScaledBitmap(bitmap, 200, 200,false);
+                    bitmapImages.add(bitResize);
 
                  /*bitmapImages = BitmapFactory.decodeFile(list[i])*/
                   //  assestString = BitmapFactory.decodeFile(list[i]);
@@ -597,30 +598,104 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addImagesToList(){
-        list.add(R.drawable.healthy1);
+        /*list.add(R.drawable.healthy1);
         list.add(R.drawable.healthy2);
-        /*list.add(R.drawable.healthy3);
-        list.add(R.drawable.healthy4);
+        list.add(R.drawable.healthy3);
         list.add(R.drawable.healthy4);
         list.add(R.drawable.healthy5);
+        list.add(R.drawable.healthy6);
         list.add(R.drawable.healthy7);
+        list.add(R.drawable.healthy8);
         list.add(R.drawable.healthy9);
         list.add(R.drawable.healthy10);
-        list.add(R.drawable.healthy2);*/
+        list.add(R.drawable.healthy11);
+        list.add(R.drawable.healthy12);
+        list.add(R.drawable.healthy13);
+        list.add(R.drawable.healthy14);
+        list.add(R.drawable.healthy15);
+        list.add(R.drawable.healthy16);
+        list.add(R.drawable.healthy17);
+        list.add(R.drawable.healthy18);
+        list.add(R.drawable.healthy19);
+        //list.add(R.drawable.healthy20);
+        //list.add(R.drawable.healthy21);
+        list.add(R.drawable.healthy22);
+        list.add(R.drawable.healthy23);
+        //list.add(R.drawable.healthy24);
+        list.add(R.drawable.healthy25);
+        list.add(R.drawable.healthy26);
+        list.add(R.drawable.healthy27);
+        list.add(R.drawable.healthy28);
+        list.add(R.drawable.healthy29);
+        list.add(R.drawable.healthy30);*/
+        /*list.add(R.drawable.healthy31);
+        list.add(R.drawable.healthy32);
+        list.add(R.drawable.healthy33);
+        list.add(R.drawable.healthy34);
+        list.add(R.drawable.healthy35);
+        list.add(R.drawable.healthy36);
+        list.add(R.drawable.healthy37);
+        list.add(R.drawable.healthy38);
+        list.add(R.drawable.healthy39);
+        list.add(R.drawable.healthy40);
+        list.add(R.drawable.healthy41);
+        list.add(R.drawable.healthy42);
+        list.add(R.drawable.healthy43);
+        list.add(R.drawable.healthy44);
+        list.add(R.drawable.healthy45);*/
+
+
 
 
 
         list.add(R.drawable.diabetic1);
         list.add(R.drawable.diabetic2);
-        /*list.add(R.drawable.diabetic3);
+        list.add(R.drawable.diabetic3);
         list.add(R.drawable.diabetic4);
         list.add(R.drawable.diabetic5);
-        list.add(R.drawable.diabetic6);
+       // list.add(R.drawable.diabetic6);
         list.add(R.drawable.diabetic7);
         list.add(R.drawable.diabetic8);
         list.add(R.drawable.diabetic9);
         list.add(R.drawable.diabetic10);
-*/
+        /*list.add(R.drawable.diabetic11);
+        list.add(R.drawable.diabetic12);
+        list.add(R.drawable.diabetic13);
+        list.add(R.drawable.diabetic14);
+        list.add(R.drawable.diabetic15);
+        list.add(R.drawable.diabetic16);
+        list.add(R.drawable.diabetic17);
+        list.add(R.drawable.diabetic18);
+        list.add(R.drawable.diabetic19);
+        list.add(R.drawable.diabetic20);*/
+        /*list.add(R.drawable.diabetic21);
+        list.add(R.drawable.diabetic22);
+        list.add(R.drawable.diabetic23);
+        list.add(R.drawable.diabetic24);
+        list.add(R.drawable.diabetic25);
+        list.add(R.drawable.diabetic26);
+        list.add(R.drawable.diabetic27);
+        list.add(R.drawable.diabetic28);
+        list.add(R.drawable.diabetic29);
+        list.add(R.drawable.diabetic30);
+        list.add(R.drawable.diabetic31);
+        list.add(R.drawable.diabetic32);
+        list.add(R.drawable.diabetic33);
+        list.add(R.drawable.diabetic34);
+        list.add(R.drawable.diabetic35);
+        list.add(R.drawable.diabetic36);
+        list.add(R.drawable.diabetic37);
+        list.add(R.drawable.diabetic38);
+        list.add(R.drawable.diabetic39);
+        list.add(R.drawable.diabetic40);
+        list.add(R.drawable.diabetic41);
+        list.add(R.drawable.diabetic42);
+        list.add(R.drawable.diabetic43);
+        list.add(R.drawable.diabetic44);
+        list.add(R.drawable.diabetic45);*/
+
+
+
 
         /*list.add(R.drawable.glaucoma1);
         list.add(R.drawable.glaucoma2);
@@ -630,84 +705,75 @@ public class MainActivity extends AppCompatActivity {
         list.add(R.drawable.glaucoma6);
         list.add(R.drawable.glaucoma7);
         list.add(R.drawable.glaucoma8);
-        list.add(R.drawable.glaucoma9);
-        list.add(R.drawable.glaucoma10);
-*/
+        list.add(R.drawable.glaucoma9);*/
+        /*list.add(R.drawable.glaucoma10);
+        list.add(R.drawable.glaucoma11);
+        list.add(R.drawable.glaucoma12);
+        list.add(R.drawable.glaucoma13);
+        list.add(R.drawable.glaucoma14);
+        list.add(R.drawable.glaucoma15);
+        list.add(R.drawable.glaucoma16);
+        list.add(R.drawable.glaucoma17);
+        list.add(R.drawable.glaucoma18);
+        list.add(R.drawable.glaucoma19);
+        list.add(R.drawable.glaucoma20);*/
+       /* list.add(R.drawable.glaucoma21);
+        list.add(R.drawable.glaucoma22);
+        list.add(R.drawable.glaucoma23);
+        list.add(R.drawable.glaucoma24);
+        list.add(R.drawable.glaucoma25);
+        list.add(R.drawable.glaucoma26);
+        list.add(R.drawable.glaucoma27);
+        list.add(R.drawable.glaucoma28);
+        list.add(R.drawable.glaucoma29);
+        list.add(R.drawable.glaucoma30);
+        list.add(R.drawable.glaucoma31);
+        list.add(R.drawable.glaucoma32);
+        list.add(R.drawable.glaucoma33);
+        list.add(R.drawable.glaucoma34);
+        list.add(R.drawable.glaucoma35);
+        list.add(R.drawable.glaucoma36);
+        list.add(R.drawable.glaucoma37);
+        list.add(R.drawable.glaucoma38);
+        list.add(R.drawable.glaucoma39);
+        list.add(R.drawable.glaucoma40);
+        list.add(R.drawable.glaucoma41);
+        list.add(R.drawable.glaucoma42);
+        list.add(R.drawable.glaucoma43);
+        list.add(R.drawable.glaucoma44);
+        list.add(R.drawable.glaucoma45);
+        list.add(R.drawable.glaucoma46);*/
+
+
     }
 
 
     public void analyseImage(View view) {
 
-
-        Bitmap imgDrawable;
-
+        compareImages();
 
 
-      /*  Bitmap dataset = BitmapFactory.decodeResource(getResources(), R.drawable.diabetis_1);
-         bmpimg1= Bitmap.createScaledBitmap(dataset, 100, 150, true);
 
+    }
 
-        Mat img1 = new Mat();
-        Utils.bitmapToMat(bmpimg1, img1);
-        Imgproc.cvtColor(img1, img1, Imgproc.COLOR_RGBA2GRAY);
-        img1.convertTo(img1, CvType.CV_32F);
-        Mat hist1 = new Mat();
-        MatOfInt histSize = new MatOfInt(180);
-        MatOfInt channels = new MatOfInt(0);
-        ArrayList<Mat> bgr_planes1 = new ArrayList<Mat>();
-        Core.split(img1, bgr_planes1);
-        MatOfFloat histRanges = new MatOfFloat(0f, 180f);
-        boolean accumulate = false;
-        Imgproc.calcHist(bgr_planes1, channels, new Mat(), hist1, histSize, histRanges, accumulate);
-        Core.normalize(hist1, hist1, 0, hist1.rows(), Core.NORM_MINMAX, -1, new Mat());
-        img1.convertTo(img1, CvType.CV_32F);
-        hist1.convertTo(hist1, CvType.CV_32F);
+    private void compareImages() {
 
+        ProgressDialog pd;
+        pd = new ProgressDialog(this);
+        pd.setIndeterminate(true);
+        pd.setCancelable(true);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setMessage("Processing...");
+        pd.show();
 
-        bmpimg2 = Bitmap.createScaledBitmap(mUploadBitmap, 100, 150, true);
-        Mat img2 = new Mat();
-        Utils.bitmapToMat(bmpimg2, img2);
-        Imgproc.cvtColor(img2, img2, Imgproc.COLOR_RGBA2GRAY);
-        Mat hist2 = new Mat();
-        ArrayList<Mat> bgr_planes2 = new ArrayList<Mat>();
-        Core.split(img2, bgr_planes2);
-        Imgproc.calcHist(bgr_planes2, channels, new Mat(), hist2, histSize, histRanges, accumulate);
-        Core.normalize(hist2, hist2, 0, hist2.rows(), Core.NORM_MINMAX, -1, new Mat());
-        img2.convertTo(img2, CvType.CV_32F);
-        hist2.convertTo(hist2, CvType.CV_32F);
-
-        double compare = Imgproc.compareHist(hist1, hist2, Imgproc.CV_COMP_CHISQR);
-        Log.d("EyeDiagnosis", "compare: " + compare);
-        if (compare > 0 && compare < 1500) {
-            Toast.makeText(MainActivity.this, "Image may be possible match, verifying", Toast.LENGTH_LONG).show();
-            new asyncTask(MainActivity.this).execute();
-        } else if (compare == 0) {
-            Toast.makeText(MainActivity.this, "Dataset matched", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_LONG).show();
-        }
-
-        startTime = System.currentTimeMillis();*/
-
-       /* if (list.size() == 0) {
-            list.add(R.drawable.healthy1);
-            list.add(R.drawable.healthy2);
-            list.add(R.drawable.diabetic1);
-            list.add(R.drawable.diabetic2);
-            list.add(R.drawable.glaucoma1);
-            list.add(R.drawable.glaucoma2);
-
-
-        }*/
-
-
+        int count = 0;
         if (histImages.size()==0) {
 
 
-                for (int i = 0; i < list.size(); i++) {
+                for (int i = 0; i < bitmapImages.size(); i++) {
 
-                    imgDrawable = BitmapFactory.decodeResource(getResources(), list.get(i));
-                    //imgDrawable = bitmapImages.get(i);
+                    //Bitmap imgDrawable = BitmapFactory.decodeResource(getResources(), list.get(i));
+                    Bitmap imgDrawable = bitmapImages.get(i);
                     Bitmap bitmap = Bitmap.createScaledBitmap(imgDrawable, 150, 150, true);
                     Mat img1 = new Mat();
                     Utils.bitmapToMat(bitmap, img1);
@@ -726,13 +792,13 @@ public class MainActivity extends AppCompatActivity {
                     hist1.convertTo(hist1, CvType.CV_32F);
 
 
-                    bmpImages.add(bitmap);
-                    Log.i("Bitmapimage", "bitmap images size is" + bmpImages.size());
+                bmpImages.add(bitmap);
+                Log.i("Bitmapimage", "bitmap images size is" + bmpImages.size());
 
-                    histImages.add(hist1);
-                    Log.i("DataImage", "data images size is" + histImages.size());
-                }
+                histImages.add(hist1);
+                Log.i("DataImage", "data images size is" + histImages.size());
             }
+        }
 
 
 
@@ -756,24 +822,33 @@ public class MainActivity extends AppCompatActivity {
 
             double compares = Imgproc.compareHist(histImages.get(i), hist2, Imgproc.CV_COMP_CHISQR);
             Log.d("EyeDiagnosis", "compare: " + compares);
-            if (compares > 0 && compares < 50) {
+            if (compares > 0 && compares < 200) {
+                pd.cancel();
                 bmpimg1 = bmpImages.get(i);
                 Log.i("TAGS", "the value of i is "+ i);
-                if (i<=1){
-                    typeOfDisease = "Healthy eye";
-                }else if (i>=1 && i<=2){
-                    typeOfDisease = "Diabetis Retinopathy";
+                if (i<=44){
+                    typeOfDisease = "Diabetis Retinopathy Detected";
+                }else if (i>=45 && i<=89){
+                    typeOfDisease = "Glaucoma Detected";
                 }else {
-                    typeOfDisease = " Glaucoma";
+                    typeOfDisease = " Healthy Eye";
                 }
                 Toast.makeText(MainActivity.this, "Image may be possible match, verifying", Toast.LENGTH_SHORT).show();
                 new asyncTask(MainActivity.this).execute();
+
                 Log.i("TAGA", "the value of i is "+ i);
                 break;
             } else if (compares == 0) {
-                Toast.makeText(MainActivity.this, "Dataset matched", Toast.LENGTH_SHORT).show();
+                 Toast.makeText(MainActivity.this, "Dataset matched", Toast.LENGTH_SHORT).show();
+                 pd.cancel();
             } else {
-                Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_SHORT).show();
+                count++;
+                if (count==list.size()){
+
+                    Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_SHORT).show();
+                    count=0;
+                    pd.cancel();
+                }
             }
 
             startTime = System.currentTimeMillis();
@@ -783,9 +858,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
     }
-
 
 
     public class asyncTask extends AsyncTask<Void, Void, Void> {
@@ -820,7 +893,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... arg0) {
             // TODO Auto-generated method stub
+
             compare();
+
             return null;
         }
 
@@ -846,13 +921,13 @@ public class MainActivity extends AppCompatActivity {
                 // to be judged as
                 // duplicate
                 {
-                    matchText = "Eye disease diagonized ";
+                    matchText = "Eye disease diagnosis ";
                            // + (endTime - startTime) + "ms";
 
 
                     isDuplicate = true;
                 } else {
-                    matchText = "Eye disease diagonized ";
+                    matchText = "Eye diagnosis ";
                             //+ (endTime - startTime) + "ms";
                     isDuplicate = false;
                 }

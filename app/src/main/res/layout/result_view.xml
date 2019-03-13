@@ -9,7 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
-        tools:context=".MainActivity" >
+        tools:context=".MainActivity"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/message"
@@ -27,8 +28,11 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:text="Type of diseas"
+            android:layout_marginBottom="5dp"
+            android:textColor="#e70c0c"
+            android:textStyle="bold"
             android:textSize="25sp"
-            android:layout_below="@id/message"
+            android:layout_below="@+id/message"
             />
 
 
@@ -41,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/disease_mssg"
             android:src="@drawable/img"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
     </RelativeLayout>
 
 </ScrollView>
