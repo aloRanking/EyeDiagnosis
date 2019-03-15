@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Bitmap> bmpImages= new ArrayList<>();
     List<Integer> list = new ArrayList<>();
     ArrayList<Bitmap> bitmapImages = new ArrayList<>();
-    ArrayList<String> assestString = new ArrayList<>();
+
     private Context context;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -131,7 +131,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = MainActivity.this;
+        final AssetManager mgr = getAssets();
 
+        initView();
+        run();
+        displayFiles(mgr, "imgs", context);
+
+
+       /* if (list.size()==0){
+        addImagesToList();
+        }*/
+    }
+
+    public void initView(){
         takePhoto = findViewById(R.id.take_photo_btn);
         uploadPhoto = findViewById(R.id.upload_btn);
         analysePhoto = findViewById(R.id.analyse_btn);
@@ -147,17 +159,6 @@ public class MainActivity extends AppCompatActivity {
         mShareFab.setVisibility(View.GONE);
         mClearFab.setVisibility(View.GONE);
         analysePhoto.setVisibility(View.GONE);
-
-
-        run();
-
-       /* if (list.size()==0){
-        addImagesToList();
-        }*/
-
-
-        final AssetManager mgr = getAssets();
-        displayFiles(mgr, "imgs", context);
 
     }
 
@@ -231,10 +232,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 
     public void getPhoto() {
         String bucketId = "";
@@ -574,28 +571,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void loadDataFromAssset(){
-        /*try {
-            // get input stream
-            InputStream ims = getAssets().open("avatar.jpg");
-            // load image as Drawable
-            Drawable d = Drawable.createFromStream(ims, null);
-            // set image to ImageView
-            mImage.setImageDrawable(d);
-        }
-        catch(IOException ex) {
-            return;
-        }
 
-        try {
-            Class res = R.drawable.class;
-            Field field = res.getField("drawableName");
-            int drawableId = field.getInt(null);
-        }
-        catch (Exception e) {
-            Log.e("MyTag", "Failure to get drawable id.", e);
-        }*/
-    }
 
     public void addImagesToList(){
         /*list.add(R.drawable.healthy1);
@@ -751,9 +727,6 @@ public class MainActivity extends AppCompatActivity {
     public void analyseImage(View view) {
 
         compareImages();
-
-
-
     }
 
     private void compareImages() {
@@ -833,7 +806,7 @@ public class MainActivity extends AppCompatActivity {
                 }else {
                     typeOfDisease = " Healthy Eye";
                 }
-                Toast.makeText(MainActivity.this, "Image may be possible match, verifying", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Verifying..", Toast.LENGTH_SHORT).show();
                 new asyncTask(MainActivity.this).execute();
 
                 Log.i("TAGA", "the value of i is "+ i);
@@ -845,7 +818,7 @@ public class MainActivity extends AppCompatActivity {
                 count++;
                 if (count==list.size()){
 
-                    Toast.makeText(MainActivity.this, "Match not found try another image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Unable to diagnose image,try another image", Toast.LENGTH_SHORT).show();
                     count=0;
                     pd.cancel();
                 }
@@ -906,10 +879,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Mat img3 = new Mat();
                 MatOfByte drawnMatches = new MatOfByte();
-                features2d.drawMatches(img1, keypoints, img2, dupKeypoints,
-                        matches_final_mat, img3, GREEN, RED, drawnMatches, Features2d.NOT_DRAW_SINGLE_POINTS);
-                bmp = Bitmap.createBitmap(img3.cols(), img3.rows(),
-                        Bitmap.Config.ARGB_8888);
+                features2d.drawMatches(img1, keypoints, img2, dupKeypoints,matches_final_mat, img3, GREEN, RED, drawnMatches, Features2d.NOT_DRAW_SINGLE_POINTS);
+                bmp = Bitmap.createBitmap(img3.cols(), img3.rows(),Bitmap.Config.ARGB_8888);
                 Imgproc.cvtColor(img3, img3, Imgproc.COLOR_BGR2RGB);
                 Utils.matToBitmap(img3, bmp);
                 List<DMatch> finalMatchesList = matches_final_mat.toList();
@@ -932,33 +903,28 @@ public class MainActivity extends AppCompatActivity {
                     isDuplicate = false;
                 }
                 pd.dismiss();
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                        asyncTaskContext);
+
+                //Build Alert Dialog
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(asyncTaskContext);
                 alertDialog.setTitle("Result");
                 alertDialog.setCancelable(false);
+
+                //inflate result_view
                 LayoutInflater factory = LayoutInflater.from(asyncTaskContext);
                 final View view = factory.inflate(R.layout.result_view, null);
-                ImageView matchedImages = (ImageView) view
-                        .findViewById(R.id.finalImage);
+                ImageView matchedImages =view.findViewById(R.id.finalImage);
+                TextView message =  view.findViewById(R.id.message);
+                TextView diseaseMssg = view.findViewById(R.id.disease_mssg);
                 matchedImages.setImageBitmap(bmp);
                 matchedImages.invalidate();
-                /*final CheckBox shouldBeDuplicate = (CheckBox) view
-                        .findViewById(R.id.checkBox);*/
-                TextView message = (TextView) view.findViewById(R.id.message);
-                TextView diseaseMssg = view.findViewById(R.id.disease_mssg);
                 message.setText(matchText);
                 diseaseMssg.setText(typeOfDisease);
                 alertDialog.setView(view);
-                /*shouldBeDuplicate
-                        .setText("These images are actually duplicates.");*/
-                alertDialog.setPositiveButton("Add to logs",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                File logs = new File(Environment
-                                        .getExternalStorageDirectory()
-                                        .getAbsolutePath()
-                                        + "/EyeDiagnosis/Data Logs.txt");
+
+                alertDialog.setPositiveButton("Add to logs", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int which) {
+                                File logs = new File(Environment.getExternalStorageDirectory()
+                                        .getAbsolutePath() + "/EyeDiagnosis/Data Logs.txt");
                                 FileWriter fw;
                                 BufferedWriter bw;
                                 try {
@@ -978,28 +944,21 @@ public class MainActivity extends AppCompatActivity {
                                             + isDuplicate + "\n");
                                     bw.close();
                                     Toast.makeText(
-                                            asyncTaskContext,
-                                            "Logs updated.\nLog location: "
-                                                    + Environment
-                                                    .getExternalStorageDirectory()
-                                                    .getAbsolutePath()
-                                                    + "/EyeDiagnosis/Data Logs.txt",
+                                            asyncTaskContext,"Logs updated.\nLog location: "
+                                                    + Environment.getExternalStorageDirectory()
+                                                    .getAbsolutePath() + "/EyeDiagnosis/Data Logs.txt",
                                             Toast.LENGTH_LONG).show();
                                 } catch (IOException e) {
                                     // TODO Auto-generated catch block
                                     // e.printStackTrace();
                                     try {
-                                        File dir = new File(Environment
-                                                .getExternalStorageDirectory()
-                                                .getAbsolutePath()
-                                                + "/EyeDiagnosis/");
+                                        File dir = new File(Environment.getExternalStorageDirectory()
+                                                .getAbsolutePath() + "/EyeDiagnosis/");
                                         dir.mkdirs();
                                         logs.createNewFile();
                                         logs = new File(
-                                                Environment
-                                                        .getExternalStorageDirectory()
-                                                        .getAbsolutePath()
-                                                        + "/EyeDiagnosis/Data Logs.txt");
+                                                Environment.getExternalStorageDirectory()
+                                                        .getAbsolutePath() + "/EyeDiagnosis/Data Logs.txt");
                                         fw = new FileWriter(logs, true);
                                         bw = new BufferedWriter(fw);
                                         bw.write("Algorithm used: "
@@ -1011,17 +970,13 @@ public class MainActivity extends AppCompatActivity {
                                                 + "type of disease " + typeOfDisease
                                                 + "\n"
                                                 + "Is actual duplicate: "
-                                               // + shouldBeDuplicate.isChecked()
                                                 + "\nRecognized as duplicate: "
                                                 + isDuplicate + "\n");
                                         bw.close();
                                         Toast.makeText(
-                                                asyncTaskContext,
-                                                "Logs updated.\nLog location: "
-                                                        + Environment
-                                                        .getExternalStorageDirectory()
-                                                        .getAbsolutePath()
-                                                        + "/EyeDiagnosis/Data Logs.txt",
+                                                asyncTaskContext,"Logs updated.\nLog location: "
+                                                        + Environment.getExternalStorageDirectory()
+                                                        .getAbsolutePath()+ "/EyeDiagnosis/Data Logs.txt",
                                                 Toast.LENGTH_LONG).show();
                                     } catch (IOException e1) {
                                         // TODO Auto-generated catch block
@@ -1040,8 +995,7 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(asyncTaskContext, e.toString(),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(asyncTaskContext, e.toString(),Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -1050,29 +1004,35 @@ public class MainActivity extends AppCompatActivity {
 
 
     void compare() {
+            //compare the both images
         try {
             bmpimg1 = bmpimg1.copy(Bitmap.Config.ARGB_8888, true);
             bmpimg2 = bmpimg2.copy(Bitmap.Config.ARGB_8888, true);
+
             img1 = new Mat();
             img2 = new Mat();
+
             Utils.bitmapToMat(bmpimg1, img1);
             Utils.bitmapToMat(bmpimg2, img2);
+
             Imgproc.cvtColor(img1, img1, Imgproc.COLOR_BGR2RGB);
             Imgproc.cvtColor(img2, img2, Imgproc.COLOR_BGR2RGB);
+
             detector = FeatureDetector.create(FeatureDetector.PYRAMID_FAST);
             DescExtractor = DescriptorExtractor.create(descriptor);
-            matcher = DescriptorMatcher
-                    .create(DescriptorMatcher.BRUTEFORCE_HAMMING);
+            matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
 
             keypoints = new MatOfKeyPoint();
             dupKeypoints = new MatOfKeyPoint();
             descriptors = new Mat();
             dupDescriptors = new Mat();
             matches = new MatOfDMatch();
+
             detector.detect(img1, keypoints);
             Log.d("LOG!", "number of query Keypoints= " + keypoints.size());
             detector.detect(img2, dupKeypoints);
             Log.d("LOG!", "number of dup Keypoints= " + dupKeypoints.size());
+
             // Descript keypoints
             DescExtractor.compute(img1, keypoints, descriptors);
             DescExtractor.compute(img2, dupKeypoints, dupDescriptors);
