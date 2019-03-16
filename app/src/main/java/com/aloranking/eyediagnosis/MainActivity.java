@@ -816,7 +816,7 @@ public class MainActivity extends AppCompatActivity {
                  pd.cancel();
             } else {
                 count++;
-                if (count==list.size()){
+                if (count==histImages.size()){
 
                     Toast.makeText(MainActivity.this, "Unable to diagnose image,try another image", Toast.LENGTH_SHORT).show();
                     count=0;
